@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Risk for Community Health Leaders | Seedpod Cyber</title>
+<style>
+/* ─────────────────────────────────────────────────
+   KAWASAKI RULE: nothing below 40px (≈30pt)
+   One idea per slide. Big text. Short words.
+───────────────────────────────────────────────── */
+:root {
+  --navy:    #0d1b2a;
+  --mid:     #0f1e2e;
+  --dark:    #0a1628;
+  --light:   #162840;
+  --blue:    #3b9ede;
+  --blueb:   #4fb3f0;
+  --gold:    #f0a500;
+  --green:   #2ecc71;
+  --red:     #e74c3c;
+  --orange:  #e67e22;
+  --white:   #f0f4f8;
+  --grey:    #a8bcd4;
+  --dim:     #6b8caa;
+  --div:     rgba(59,158,222,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100%; }
+body { font-family: 'Segoe UI','Helvetica Neue',Arial,sans-serif; background: var(--navy); color: var(--white); height: 100%; }
+
+/* ── SECTIONS ── */
+.s {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.bg-a { background: linear-gradient(155deg,#0a1628 0%,#0d1b2a 100%); }
+.bg-b { background: linear-gradient(155deg,#0d1b2a 0%,#0f1e2e 100%); }
+.bg-c { background: linear-gradient(135deg,#0a1628 0%,#162840 100%); }
+.bg-red { background: linear-gradient(135deg,#1a0a0a 0%,#1e0d0d 100%); }
+
+/* ── PROGRESS & DOTS ── */
+#prog { position:fixed; top:0; left:0; height:3px; z-index:300; pointer-events:none; background:linear-gradient(90deg,var(--blue),var(--blueb)); transition:width .2s; }
+#dots { position:fixed; right:14px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:6px; z-index:200; }
+.dot { width:6px; height:6px; border-radius:50%; background:rgba(59,158,222,0.2); border:1px solid rgba(59,158,222,0.35); cursor:pointer; transition:all .2s; }
+.dot.on { background:var(--blueb); border-color:var(--blueb); width:7px; height:7px; }
+
+/* ══ KAWASAKI TYPE SCALE ══════════════════════
+   min body = 40px (≈30pt)
+   Everything larger from there.
+═══════════════════════════════════════════════ */
+
+/* Giant stat / number */
+.t-stat  { font-size: clamp(80px, 10vw, 120px); font-weight: 900; line-height: 1; letter-spacing: -2px; }
+/* Slide headline */
+.t-h1    { font-size: clamp(42px, 5vw, 64px);   font-weight: 800; line-height: 1.15; }
+/* Large body / bullet */
+.t-body  { font-size: clamp(32px, 3.5vw, 44px); font-weight: 500; line-height: 1.35; color: var(--grey); }
+/* Sub-label (smallest allowed = 40px context; use sparingly) */
+.t-label { font-size: clamp(16px, 2vw, 22px);   font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--blue); }
+/* Supporting note — minimum 30pt enforced by never using below 40px for narrative */
+.t-note  { font-size: clamp(28px, 3vw, 40px);   font-weight: 400; line-height: 1.4; color: var(--grey); }
+
+/* colour mods */
+.c-blue   { color: var(--blueb); }
+.c-red    { color: var(--red); }
+.c-gold   { color: var(--gold); }
+.c-green  { color: var(--green); }
+.c-white  { color: var(--white); }
+.c-dim    { color: var(--dim); }
+
+/* ── LAYOUT HELPERS ── */
+.pad   { padding: 52px 80px 40px; }
+.pad-s { padding: 36px 80px 28px; }
+.col   { display: flex; flex-direction: column; gap: 20px; }
+.row   { display: flex; flex-direction: row; gap: 24px; align-items: stretch; }
+.flex1 { flex: 1; }
+.center { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex: 1; }
+
+/* ── DIVIDER ── */
+.rule { width: 100%; height: 2px; background: var(--div); flex-shrink: 0; }
+
+/* ── SLIDE FOOTER ── */
+.ftr {
+  padding: 10px 80px;
+  border-top: 1px solid var(--div);
+  display: flex; justify-content: space-between;
+  font-size: 14px; color: var(--dim); letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+/* ── HEADER BAR ── */
+.hdr {
+  padding: 28px 80px 20px;
+  border-bottom: 2px solid var(--div);
+  flex-shrink: 0;
+}
+
+/* ── STAT BLOCK ── */
+.stat-block {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 28px 32px;
+  background: rgba(27,45,66,0.7);
+  border: 1px solid var(--div);
+  border-radius: 16px;
+  gap: 10px;
+}
+
+/* ── BULLET ROW ── */
+.br {
+  display: flex; gap: 20px; align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--div);
+}
+.br:last-child { border-bottom: none; }
+.br-icon { font-size: 32px; flex-shrink: 0; line-height: 1; margin-top: 4px; }
+
+/* ── RING BADGE ── */
+.ring {
+  display: inline-flex; align-items: center;
+  padding: 6px 18px; border-radius: 24px;
+  font-size: 18px; font-weight: 700;
+  letter-spacing: .5px;
+}
+.ring-1 { background: rgba(46,204,113,0.12);  border: 1px solid rgba(46,204,113,0.3);  color: var(--green); }
+.ring-2 { background: rgba(240,165,0,0.12);   border: 1px solid rgba(240,165,0,0.3);   color: var(--gold); }
+.ring-3 { background: rgba(231,76,60,0.12);   border: 1px solid rgba(231,76,60,0.3);   color: var(--red); }
+
+/* ── REVEAL BLOCK ── */
+.reveal {
+  flex: 1;
+  background: rgba(231,76,60,0.07);
+  border: 1px solid rgba(231,76,60,0.22);
+  border-left: 5px solid var(--red);
+  border-radius: 14px;
+  padding: 24px 28px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* ── CBI SPOTLIGHT ── */
+.cbi-banner {
+  background: rgba(231,76,60,0.08);
+  border: 2px solid rgba(231,76,60,0.3);
+  border-radius: 16px;
+  padding: 28px 36px;
+  text-align: center;
+}
+
+/* ── ACTION BLOCK ── */
+.action-block {
+  flex: 1;
+  background: rgba(27,45,66,0.7);
+  border: 1px solid var(--div);
+  border-radius: 16px;
+  padding: 28px 32px;
+  display: flex; gap: 20px; align-items: flex-start;
+}
+.action-num { font-size: 72px; font-weight: 900; color: var(--blue); line-height: 1; opacity: .6; flex-shrink: 0; width: 70px; }
+
+/* ── TAG ACCENT ── */
+.tag-line {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; border-radius: 10px;
+  background: rgba(59,158,222,0.08);
+  border: 1px solid rgba(59,158,222,0.2);
+  font-size: 22px; font-weight: 600; color: var(--grey);
+}
+.tag-line .em { color: var(--white); font-weight: 700; }
+
+/* ── TITLE BACKGROUND DECORATION ── */
+.title-bg::before {
+  content: '';
+  position: absolute; top: -80px; right: -60px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(59,158,222,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+.title-bg::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  width: 55%; height: 3px;
+  background: linear-gradient(90deg, var(--blue), transparent);
+}
+
+/* ── CHECKER GRID for stats ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<div id="dots"></div>
+
+
+<!-- ══════════════════════════════════════════════
+  01 · TITLE
+══════════════════════════════════════════════ -->
+<section class="s bg-c title-bg" data-label="Title" style="position:relative; overflow:hidden;">
+  <div class="center pad">
+    <div class="t-label" style="margin-bottom:22px;">Seedpod Cyber · Community Health CEO Briefing · 2026</div>
+    <div class="t-h1 c-white" style="font-size:clamp(52px,6.5vw,80px); max-width:900px; margin-bottom:24px; text-align:center;">
+      Cyber Risk Is a<br>Business Problem.<br><span class="c-blue">Let's Treat It Like One.</span>
+    </div>
+    <div class="t-note" style="max-width:620px; text-align:center; margin-bottom:36px;">
+      Your exposure. What insurance actually does.<br>Three actions you can take this month.
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+  02 · YOUR WORLD
+══════════════════════════════════════════════ -->
+<section class="s bg-a" data-label="Your World">
+  <div class="hdr">
+    <div class="t-label">Starting Here</div>
+    <div class="t-h1">You Already Have Enough to Worry About.</div>
+  </div>
+
+  <div class="col pad-s flex1">
+    <div class="row flex1">
+      <div class="stat-block">
+        <div class="t-label c-dim">Worry #1</div>
+        <div class="t-h1 c-gold">Funding cuts</div>
+        <div class="t-note">Painful — but you have time to adapt and respond.</div>
+      </div>
+      <div class="stat-block">
+        <div class="t-label c-dim">Worry #2</div>
+        <div class="t-h1 c-gold">Workforce</div>
+        <div class="t-note">Hard — but there are options, even if expensive.</div>
+      </div>
+      <div class="stat-block" style="background:rgba(231,76,60,0.08); border-color:rgba(231,76,60,0.3);">
+        <div class="t-label" style="color:var(--red);">Worry #3</div>
+        <div class="t-h1 c-red">Cyber incident</div>
+        <div class="t-note c-white">No warning. Everything stops at once. Clock starts immediately.</div>
+      </div>
+    </div>
+
+    <div class="tag-line">
+      <span>The first two give you time to respond.</span>
+      <span class="em">The third one doesn't.</span>
+    </div>
+  </div>
+  <div class="ftr"><span>SEEDPOD CYBER</span><span>Confidential</span></div>
+</section>
+
+
+
+
+
+
+<!-- ══════════════════════════════════════════════
+  07 · RING 1 — WHAT YOU KNOW
+══════════════════════════════════════════════ -->
+<section class="s bg-a" data-label="Ring 1">
+  <div class="hdr">
+    <span class="ring ring-1" style="margin-bottom:10px; display:inline-flex;">Ring 1 · What You Know</span>
+    <div class="t-h1" style="margin-top:10px;">Here's What You Probably Know.</div>
+  </div>
+
+  <div class="pad-s flex1 col">
+    <div class="br">
+      <div class="br-icon">✅</div>
+      <div class="t-body c-white">HIPAA requires you to protect patient data — and you do.</div>
+    </div>
+    <div class="br">
+      <div class="br-icon">✅</div>
+      <div class="t-body c-white">Ransomware is real. Change Healthcare made that clear.</div>
+    </div>
+    <div class="br">
+      <div class="br-icon">✅</div>
+      <div class="t-body c-white">Your IT team is stretched. There are things they haven't gotten to yet.</div>
+    </div>
+    <div class="br">
+      <div class="br-icon">✅</div>
+      <div class="t-body c-white">You have some MFA in place — at least for leadership email.</div>
+    </div>
+
+    <div class="rule" style="margin-top:auto;"></div>
+    <div class="tag-line" style="margin-top:16px;">
+      <span class="em">The unanswered question:</span>
+      <span>"If something happened tomorrow — would our insurance actually cover it?"</span>
+    </div>
+  </div>
+  <div class="ftr"><span>SEEDPOD CYBER</span><span>Confidential</span></div>
+</section>
+
+
+
+
+<!-- ══════════════════════════════════════════════
+  08 · RING 2 — WHAT YOU SUSPECT
+══════════════════════════════════════════════ -->
+<section class="s bg-b" data-label="Ring 2">
+  <div class="hdr">
+    <span class="ring ring-2" style="margin-bottom:10px; display:inline-flex;">Ring 2 · What You Suspect</span>
+    <div class="t-h1" style="margin-top:10px;">These Gaps Are Real.</div>
+  </div>
+
+  <div class="pad-s flex1 col">
+    <div class="g2 flex1">
+      <div class="stat-block" style="gap:6px;">
+        <div class="br-icon">🔶</div>
+        <div class="t-body c-white">You've never actually read your cyber policy.</div>
+        <div class="t-note">You don't know if a vendor outage is covered.</div>
+      </div>
+      <div class="stat-block" style="gap:6px;">
+        <div class="br-icon">🔶</div>
+        <div class="t-body c-white">Recovery would take longer than a few days.</div>
+        <div class="t-note">You've never actually tested your backups end-to-end.</div>
+      </div>
+      <div class="stat-block" style="gap:6px;">
+        <div class="br-icon">🔶</div>
+        <div class="t-body c-white">Your policy limit may be too low.</div>
+        <div class="t-note">It hasn't been benchmarked against your current exposure.</div>
+      </div>
+      <div class="stat-block" style="gap:6px;">
+        <div class="br-icon">🔶</div>
+        <div class="t-body c-white">Your board doesn't know what to ask about cyber risk.</div>
+        <div class="t-note">It comes up — then moves on with no clear accountability.</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="ftr"><span>SEEDPOD CYBER</span><span>Confidential</span></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+  09 · RING 3 — THE REVEALS
+══════════════════════════════════════════════ -->
+<section class="s bg-a" data-label="Ring 3">
+  <div class="hdr">
+    <span class="ring ring-3" style="margin-bottom:10px; display:inline-flex;">Ring 3 · What May Surprise You</span>
+    <div class="t-h1" style="margin-top:10px;">Four Things Most CEOs Haven't Had a Chance to Look Into — But Should.</div>
+  </div>
+
+  <div class="pad-s flex1 col">
+    <div class="g2 flex1">
+      <div class="reveal">
+        <div class="t-label" style="color:var(--red);">Reveal 1</div>
+        <div class="t-body c-white">Your website is probably sending patient data to Facebook right now.</div>
+        <div class="t-note">A tracking pixel installed by marketing. Novant Health: <strong class="c-red">$6.6M settlement, 2024.</strong></div>
+      </div>
+      <div class="reveal">
+        <div class="t-label" style="color:var(--red);">Reveal 2</div>
+        <div class="t-body c-white">MFA on exec email ≠ MFA everywhere.</div>
+        <div class="t-note">Your billing coordinator logging in from home with just a password? <strong class="c-red">That's the unlocked door.</strong></div>
+      </div>
+      <div class="reveal">
+        <div class="t-label" style="color:var(--red);">Reveal 3</div>
+        <div class="t-body c-white">OCR fines don't scale down for smaller organizations.</div>
+        <div class="t-note">Enforcement against community health centers jumped <strong class="c-red">340%</strong> in 2024–25. Legal defense runs six figures — even if you did nothing wrong.</div>
+      </div>
+      <div class="reveal">
+        <div class="t-label" style="color:var(--red);">Reveal 4</div>
+        <div class="t-body c-white">Your policy may have a war exclusion that voids coverage in a nation-state attack.</div>
+        <div class="t-note">State-sponsored groups target healthcare. <strong class="c-red">Congress doesn't have to declare war</strong> for the exclusion to apply.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>SEEDPOD CYBER</span><span>Lokker 2024 · HHS OCR · Coalition 2026 · Howden 2025</span></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+  LIVE DEMO
+══════════════════════════════════════════════ -->
+<section class="s bg-b" data-label="Live Demo">
+  <div class="center pad">
+    <div class="t-label" style="margin-bottom:20px;">Live Demo</div>
+    <div class="t-h1 c-white" style="font-size:clamp(44px,5.5vw,68px); margin-bottom:16px; text-align:center;">
+      What Would This Cost <em>Your</em> Organization?
+    </div>
+    <div class="t-note" style="text-align:center; margin-bottom:40px; opacity:.75;">
+      Run real numbers — vendor outage, data breach, ransomware
+    </div>
+    <a href="https://chcaccostestimator.seedpodcyber.com/" target="_blank"
+       style="display:inline-flex; align-items:center; gap:16px; background:rgba(0,194,168,0.15); border:2px solid var(--acc); border-radius:14px; padding:22px 40px; text-decoration:none; transition:background .2s;"
+       onmouseover="this.style.background='rgba(0,194,168,0.28)'" onmouseout="this.style.background='rgba(0,194,168,0.15)'">
+      <span style="font-size:clamp(32px,4vw,48px);">💻</span>
+      <span class="t-h1 c-acc" style="font-size:clamp(22px,2.5vw,34px); font-weight:800;">chcaccostestimator.seedpodcyber.com</span>
+    </a>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+  11 · WHAT YOUR POLICY MUST DO
+══════════════════════════════════════════════ -->
+<section class="s bg-a" data-label="Policy Must-Haves">
+  <div class="hdr">
+    <div class="t-label">Coverage Checklist</div>
+    <div class="t-h1">Five Things Your Policy Must Do</div>
+  </div>
+
+  <div class="pad-s flex1 col">
+    <div class="br" style="background:rgba(231,76,60,0.08); border-radius:12px; border-bottom:none; padding:18px 20px; border:1px solid rgba(231,76,60,0.3);">
+      <div class="br-icon" style="font-size:36px;">1️⃣</div>
+      <div>
+        <div class="t-body c-red" style="font-size:clamp(28px,3.2vw,42px);">Cover your revenue when a <em>vendor</em> goes down — not just your own systems.</div>
+        <div class="t-note" style="margin-top:6px;"><strong class="c-white">Contingent Business Interruption.</strong> This is your Change Healthcare protection. Most policies don't include it — or bury it under a sub-limit. Ask your broker to confirm it explicitly.</div>
+      </div>
+    </div>
+
+    <div class="br">
+      <div class="br-icon">2️⃣</div>
+      <div>
+        <div class="t-body c-white">Fund your HIPAA defense — even if you did nothing wrong.</div>
+        <div class="t-note">OCR investigations are expensive to defend. Panel attorneys must have real HIPAA experience.</div>
+      </div>
+    </div>
+    <div class="br">
+      <div class="br-icon">3️⃣</div>
+      <div>
+        <div class="t-body c-white">Apply full limits to ransomware — no sub-limits. Review your war exclusion.</div>
+        <div class="t-note">Some policies cap ransomware coverage well below your total limit. Confirm full limits apply.</div>
+      </div>
+    </div>
+    <div class="br">
+      <div class="br-icon">4️⃣</div>
+      <div>
+        <div class="t-body c-white">Cover website privacy liability — pixels, trackers, patient portal tools.</div>
+        <div class="t-note">Carriers are excluding this. Don't assume it's included. It requires explicit confirmation.</div>
+      </div>
+    </div>
+    <div class="br" style="border-bottom:none;">
+      <div class="br-icon">5️⃣</div>
+      <div>
+        <div class="t-body c-white">Match your limits to your real exposure — not a number from 3 years ago.</div>
+        <div class="t-note">Your revenue and patient count have changed. Your limit should reflect that.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>SEEDPOD CYBER</span><span>Confidential — For Discussion Purposes</span></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+  12 · CONTROLS THAT LOWER YOUR COST
+══════════════════════════════════════════════ -->
+<section class="s bg-b" data-label="Controls">
+  <div class="hdr">
+    <div class="t-label">Reducing Your Cost of Risk</div>
+    <div class="t-h1">Four Controls That Lower Both Your Risk <em>and</em> Your Premium</div>
+  </div>
+
+  <div class="pad-s flex1 col">
+    <div class="tag-line" style="margin-bottom:8px;">
+      <span>Good security posture =</span>
+      <span class="em">15–25% lower premium.</span>
+      <span>Insurers now price on controls, not just size.</span>
+    </div>
+
+    <div class="g2 flex1">
+      <div class="stat-block">
+        <div class="t-label c-green">Highest Impact · Do First</div>
+        <div class="t-body c-white" style="font-size:clamp(28px,3vw,40px);">Multi-Factor Authentication — on <em>everything.</em></div>
+        <div class="t-note">Not just leadership email. Every account. Every remote login. Many health centers are halfway there. <strong class="c-white">Finish the job.</strong></div>
+        <div class="tag-line" style="margin-top:8px; background:rgba(231,76,60,0.08); border-color:rgba(231,76,60,0.25);">
+          <span class="c-red">Without it:</span><span>15–30% premium surcharge or coverage declined.</span>
+        </div>
+      </div>
+
+      <div class="stat-block">
+        <div class="t-label">Ransomware Defense</div>
+        <div class="t-body c-white" style="font-size:clamp(28px,3vw,40px);">Tested Backups + Endpoint Detection (EDR)</div>
+        <div class="t-note">Backups you've actually proven you can restore from. EDR software watching all devices in real time.</div>
+        <div class="analogy-line t-note" style="margin-top:8px; font-style:italic; color:var(--dim);">Backups are the insurance policy for your insurance policy.</div>
+      </div>
+
+      <div class="stat-block">
+        <div class="t-label">24/7 Monitoring</div>
+        <div class="t-body c-white" style="font-size:clamp(28px,3vw,40px);">Security Operations Center (SOC)</div>
+        <div class="t-note">Watching your network around the clock. Cuts the 89-day attacker dwell time down to days.</div>
+        <div class="analogy-line t-note" style="margin-top:8px; font-style:italic; color:var(--dim);">Security cameras on every door — with a guard watching live at 2am Sunday.</div>
+      </div>
+
+      <div class="stat-block">
+        <div class="t-label">The Human Layer</div>
+        <div class="t-body c-white" style="font-size:clamp(28px,3vw,40px);">Security Awareness Training — Quarterly</div>
+        <div class="t-note">Over half of breaches start with a person being tricked. Training + simulated phishing = your most cost-effective control.</div>
+        <div class="stat-block" style="background:rgba(46,204,113,0.08); border-color:rgba(46,204,113,0.25); margin-top:8px; padding:12px 16px;">
+          <div class="t-note c-green">$15K–$40K/yr in these four controls protects against a $2.5M+ incident.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>SEEDPOD CYBER</span><span>WTW IMR 2025 · Coalition 2026</span></div>
+</section>
+
+
+
+
+<!-- ══════════════════════════════════════════════
+  13 · BOARD ROLE
+══════════════════════════════════════════════ -->
+<section class="s bg-a" data-label="Board">
+  <div class="hdr">
+    <div class="t-label">Board Governance</div>
+    <div class="t-h1">What Your Board Should See — and One Thing You Should Do Every Year:</div>
+  </div>
+
+  <div class="pad-s flex1 col">
+    <div class="row flex1" style="gap:32px;">
+      <div class="col flex1">
+        <div class="t-body c-gold" style="margin-bottom:12px;">5 metrics. Every quarter.</div>
+        <div class="br">
+          <div class="br-icon">📊</div>
+          <div><div class="t-body c-white">MFA coverage</div><div class="t-note">% of accounts with MFA enabled · Target: 100%</div></div>
+        </div>
+        <div class="br">
+          <div class="br-icon">📊</div>
+          <div><div class="t-body c-white">Patching rate</div><div class="t-note">% of systems running current software · Target: 95%+</div></div>
+        </div>
+        <div class="br">
+          <div class="br-icon">📊</div>
+          <div><div class="t-body c-white">Phishing click rate</div><div class="t-note">% of staff who clicked a test phishing email · Target: under 5%</div></div>
+        </div>
+        <div class="br">
+          <div class="br-icon">📊</div>
+          <div><div class="t-body c-white">Backup verification date</div><div class="t-note">When did we last successfully restore? · Should be quarterly</div></div>
+        </div>
+        <div class="br" style="border-bottom:none;">
+          <div class="br-icon">📊</div>
+          <div><div class="t-body c-white">Incident log</div><div class="t-note">Security events detected and resolved this quarter</div></div>
+        </div>
+      </div>
+
+      <div class="col flex1" style="gap:16px;">
+        <div class="stat-block" style="background:rgba(240,165,0,0.07); border-color:rgba(240,165,0,0.28); flex:1;">
+          <div class="t-label c-gold">The Tabletop Exercise</div>
+          <div class="t-body c-white">"It's 7am Monday. Your EHR is encrypted. What do you do?"</div>
+          <div class="t-note" style="margin-top:10px;">A 2-hour facilitated simulation with your full leadership team. Most health centers have a response plan. Far fewer have tested it with the CEO and CFO in the room — which is <strong class="c-white">exactly where the hard calls get made.</strong></div>
+        </div>
+        <div class="br" style="border-bottom:none; padding:0;">
+          <div class="br-icon">⚠️</div>
+          <div class="t-note">When did your <strong class="c-white">leadership team</strong> last run through this together — not just IT?</div>
+        </div>
+        <div class="tag-line">
+          <span class="em">Ask your insurer.</span>
+          <span>Tabletop facilitation is often a free policy benefit.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>SEEDPOD CYBER</span><span>Hiscox Cyber Readiness Report 2024</span></div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+  14 · THREE THINGS
+══════════════════════════════════════════════ -->
+<section class="s bg-c" data-label="3 Things">
+  <div class="hdr">
+    <div class="t-label">Action Plan</div>
+    <div class="t-h1">Three Things to Do Before Your Next Board Meeting</div>
+  </div>
+
+  <div class="pad-s flex1 col" style="gap:14px;">
+    <div class="action-block">
+      <div class="action-num">1</div>
+      <div class="flex1">
+        <div class="t-body c-white" style="font-size:clamp(28px,3vw,42px); margin-bottom:8px;">Get a Security Risk Assessment done.</div>
+        <div class="t-note">Know exactly where your gaps are. Often free through your broker or insurer. Creates evidence of HIPAA due diligence.</div>
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-num">2</div>
+      <div class="flex1">
+        <div class="t-body c-white" style="font-size:clamp(28px,3vw,42px); margin-bottom:8px;">Confirm MFA is on every account — not just leadership.</div>
+        <div class="t-note">Ask your IT team today: "Is MFA enabled on 100% of accounts and remote access points?" If not — this is the week to fix it.</div>
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-num">3</div>
+      <div class="flex1">
+        <div class="t-body c-white" style="font-size:clamp(28px,3vw,42px); margin-bottom:8px;">Benchmark your current policy — especially for CBI coverage.</div>
+        <div class="t-note">Ask your broker: "Are we covered if our billing company or clearinghouse gets hit?" Confirm your limits, your war exclusion, and your privacy liability coverage. Market is favorable right now — don't wait for renewal.</div>
+        <div style="margin-top:10px; display:inline-flex; align-items:center; gap:10px; background:rgba(0,194,168,0.15); border:1.5px solid rgba(0,194,168,0.5); border-radius:8px; padding:8px 16px;">
+          <span style="font-size:20px;">🔢</span>
+          <span class="t-note c-acc" style="font-size:clamp(16px,1.6vw,22px); font-weight:700;">Estimate your exposure: chcaccostestimator.seedpodcyber.com</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>SEEDPOD CYBER</span><span>Start with #2 — it can be done this week</span></div>
+</section>
+
+
+
+
+<!-- ══════════════════════════════════════════════
+  16 · CLOSING
+══════════════════════════════════════════════ -->
+<section class="s bg-c" data-label="Q&A" style="position:relative; overflow:hidden;">
+  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:700px; height:700px; background:radial-gradient(circle, rgba(59,158,222,0.06) 0%, transparent 65%); pointer-events:none;"></div>
+  <div class="center pad">
+    <div class="t-label" style="margin-bottom:18px; position:relative;">Questions & Discussion</div>
+    <div class="t-h1 c-white" style="font-size:clamp(44px,5.5vw,68px); max-width:820px; margin-bottom:20px; position:relative; text-align:center;">
+      Your Mission Is Too Important<br>to Let a Preventable Incident<br><span class="c-blue">Take You Down.</span>
+    </div>
+    <div class="t-note" style="max-width:540px; text-align:center; margin-bottom:36px; position:relative;">
+      Every health center has a different risk profile.<br>We're here to help you build a program that's right for yours.
+    </div>
+
+    <div style="display:flex; gap:28px; flex-wrap:wrap; justify-content:center; position:relative; margin-bottom:36px;">
+      <div style="text-align:center;">
+        <div class="t-label" style="margin-bottom:6px;">Presented by</div>
+        <div class="t-body c-white">Doug Kreitzberg · Seedpod Cyber</div>
+      </div>
+      <div style="width:1px; background:var(--div);"></div>
+      <div style="text-align:center;">
+        <div class="t-label" style="margin-bottom:6px;">Contact</div>
+        <div class="t-body c-blue">doug.kreitzberg@seedpodcyber.com</div>
+      </div>
+    </div>
+
+    <div style="padding:22px 32px; background:rgba(59,158,222,0.07); border:1px solid rgba(59,158,222,0.2); border-radius:14px; max-width:680px; position:relative;">
+      <div class="t-label" style="font-size:12px; margin-bottom:12px;">The three things to do before your next board meeting</div>
+      <div class="col" style="gap:10px;">
+        <div class="t-note"><span class="c-blue" style="font-weight:800;">1. </span>Security Risk Assessment — know where your gaps are</div>
+        <div class="t-note"><span class="c-blue" style="font-weight:800;">2. </span>MFA on every account — not just leadership</div>
+        <div class="t-note"><span class="c-blue" style="font-weight:800;">3. </span>Benchmark your policy — confirm CBI coverage. Market is favorable now.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+  SCRIPT
+══════════════════════════════════════════════ -->
+<script>
+(function () {
+  var sections, total, dotContainer, prog, ticking = false;
+
+  function build() {
+    sections = Array.prototype.slice.call(document.querySelectorAll('.s'));
+    total = sections.length;
+    dotContainer = document.getElementById('dots');
+    prog = document.getElementById('prog');
+    dotContainer.innerHTML = '';
+    sections.forEach(function (sec, i) {
+      var d = document.createElement('div');
+      d.className = 'dot';
+      d.title = sec.getAttribute('data-label') || String(i + 1);
+      d.addEventListener('click', function () { sec.scrollIntoView({ behavior: 'smooth' }); });
+      dotContainer.appendChild(d);
+    });
+    update();
+  }
+
+  function active() {
+    var mid = window.innerHeight / 2;
+    for (var i = sections.length - 1; i >= 0; i--) {
+      if (sections[i].getBoundingClientRect().top <= mid) return i;
+    }
+    return 0;
+  }
+
+  function update() {
+    var idx = active();
+    var dots = dotContainer.querySelectorAll('.dot');
+    dots.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
+    prog.style.width = (((idx + 1) / total) * 100) + '%';
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+
+  document.addEventListener('keydown', function (e) {
+    var idx = active();
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      if (idx < total - 1) sections[idx + 1].scrollIntoView({ behavior: 'smooth' });
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (idx > 0) sections[idx - 1].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', build);
+  } else {
+    build();
+  }
+}());
+</script>
+</body>
+</html>
